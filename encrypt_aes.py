@@ -253,6 +253,18 @@ class AES:
 
     def cipher(self, plaintext, cipherKey, nk, nr):
 
+        print("=========================================================")
+        if (nk == 4 and nr == 10):
+            print("AES-128 Nk = 4 Nr = 10")
+        elif (nk == 6 and nr == 12):
+            print("AES-192 Nk = 6 Nr = 12")
+        elif (nk == 8 and nr == 14):
+            print("AES-256 Nk = 8 Nr =14")
+        print("PLAINTEXT: %.32x" % plaintext)
+        print("KEY: %.32x" % cipherKey)
+        print("ENCRYPTION")
+        print("=========================================================")
+
         word = self.keyExpansion(cipherKey, nr, nk)
         state = self.toMatrix(plaintext)
         state = self.addRoundKey(state, word, 0)  # round zero
@@ -353,21 +365,74 @@ if __name__ == "__main__":
     file = open(plaintext, "rb")
     contents = (file.read())
     file.close()
-    encryption = aes.cipher(int.from_bytes(contents, byteorder='big'), int.from_bytes(key, byteorder='big'), nk, nr)
-    encryption_bytes = "%.32x" % aes.toBytes(encryption)
-    enc_file = open('ciphertext.txt.enc', 'wb')
-    enc_file.write(binascii.unhexlify(encryption_bytes))
-    enc_file.close()
+   # print("LENGTH: ", contents.__len__())
+    #print(contents.hex())
+    num_of_blocks = int((contents.__len__()) / 16)
+    #print("Number of blocks: ", num_of_blocks) # this will provide how many blocks total to put through encryption
+    remainder = num_of_blocks % 16 # checks if there is a remainder and if so will provide the padding needed to get to 16 bytes
+   # print("Remainder: ", remainder)
+    if not remainder == 0:
+        num_of_blocks = num_of_blocks + 1
+        number_of_padded_bytes = 16 - remainder
+      #  print("Number of padded bytes: ", number_of_padded_bytes)
+
+  #  print("Total number of blocks: ", num_of_blocks)
+
+    byte_array = list(contents)
+
+    for i in range(number_of_padded_bytes):
+        byte_array.append(00)
+
+    #print(byte_array)
+
+    #print("rem: ", byte_array.__len__() % 16)
+
+    block = bytes(byte_array)
+
+    starting_index = 0
+
+    for i in range(num_of_blocks):
+        byte_block = block[starting_index: starting_index + 16]
+        print("Byte Block ", i, byte_block)
+
+        encryption = aes.cipher(int.from_bytes(byte_block, byteorder='big'), int.from_bytes(key, byteorder='big'), nk, nr)
+        encryption_bytes = "%.32x" % aes.toBytes(encryption)
+
+        if i == 0:
+            enc_file = open('ciphertext.txt.enc', 'wb')
+        else:
+            enc_file = open('ciphertext.txt.enc', 'ab')
+        enc_file.write(binascii.unhexlify(encryption_bytes))
+        enc_file.close()
+        starting_index = starting_index + 16
 
     print("Decrypting...")
+    starting_index = 0
     enc_file = open("ciphertext.txt.enc", "rb")
     enc_contents = (enc_file.read())
     enc_file.close()
-    decryption = aes.invCipher(int.from_bytes(enc_contents, byteorder='big'), int.from_bytes(key, byteorder='big'), nk, nr)
-    decrypted_bytes = "%.32x" % aes.toBytes(decryption)
-    dcrpt_file = open('decryptedtext.txt', 'wb')
-    dcrpt_file.write(binascii.unhexlify(decrypted_bytes))
-    dcrpt_file.close()
-    print("Saving as decryptedtext.txt")
 
+    byte_array = list(enc_contents)
+
+    # print(byte_array)
+
+    # print("rem: ", byte_array.__len__() % 16)
+
+    block = bytes(byte_array)
+
+    for i in range(num_of_blocks):
+        byte_block = block[starting_index: starting_index + 16]
+        print("Byte Block ", i, byte_block)
+        decryption = aes.invCipher(int.from_bytes(byte_block, byteorder='big'), int.from_bytes(key, byteorder='big'), nk, nr)
+        decrypted_bytes = "%.32x" % aes.toBytes(decryption)
+
+        if i == 0:
+            dcrpt_file = open('decryptedtext.txt', 'wb')
+        else:
+            dcrpt_file = open('decryptedtext.txt', 'ab')
+        dcrpt_file.write(binascii.unhexlify(decrypted_bytes))
+        dcrpt_file.close()
+        starting_index = starting_index + 16
+
+    print("Saving as decryptedtext.txt")
     print("DONE!")
