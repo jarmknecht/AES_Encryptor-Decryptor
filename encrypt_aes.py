@@ -365,23 +365,22 @@ if __name__ == "__main__":
     file = open(plaintext, "rb")
     contents = (file.read())
     file.close()
-   # print("LENGTH: ", contents.__len__())
+    print("LENGTH: ", contents.__len__())
     #print(contents.hex())
     num_of_blocks = int((contents.__len__()) / 16)
-    #print("Number of blocks: ", num_of_blocks) # this will provide how many blocks total to put through encryption
-    remainder = num_of_blocks % 16 # checks if there is a remainder and if so will provide the padding needed to get to 16 bytes
-   # print("Remainder: ", remainder)
+    print("Number of blocks: ", num_of_blocks) # this will provide how many blocks total to put through encryption
+    remainder = int((contents.__len__()) % 16)  # checks if there is a remainder and if so will provide the padding needed to get to 16 bytes
+    byte_array = list(contents)
+    print("Remainder: ", remainder)
     if not remainder == 0:
         num_of_blocks = num_of_blocks + 1
         number_of_padded_bytes = 16 - remainder
+
+        for i in range(number_of_padded_bytes):
+            byte_array.append(00)
       #  print("Number of padded bytes: ", number_of_padded_bytes)
 
   #  print("Total number of blocks: ", num_of_blocks)
-
-    byte_array = list(contents)
-
-    for i in range(number_of_padded_bytes):
-        byte_array.append(00)
 
     #print(byte_array)
 
