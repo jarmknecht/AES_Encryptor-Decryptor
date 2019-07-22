@@ -137,7 +137,7 @@ class AES:
 
         return newWord
 
-    def rotWord(self, word):  # MAYBE CORRECT
+    def rotWord(self, word):
         topByte = (word & 0xFF000000) >> 24
         word = (word & 0x00FFFFFF)
         word = word << self.bits_inByte
