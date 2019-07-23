@@ -396,33 +396,33 @@ if __name__ == "__main__":
         enc_file.close()
         starting_index = starting_index + 16
 
-    print("Decrypting...")
-    starting_index = 0
-    enc_file = open("ciphertext.txt.enc", "rb")
-    enc_contents = (enc_file.read())
-    enc_file.close()
+    #print("Decrypting...")
+    #starting_index = 0
+    #enc_file = open("ciphertext.txt.enc", "rb")
+    #enc_contents = (enc_file.read())
+    #enc_file.close()
 
-    byte_array = list(enc_contents)
+    #byte_array = list(enc_contents)
 
     # print(byte_array)
 
     # print("rem: ", byte_array.__len__() % 16)
 
-    block = bytes(byte_array)
+    #block = bytes(byte_array)
 
-    for i in range(num_of_blocks):
-        byte_block = block[starting_index: starting_index + 16]
+    #for i in range(num_of_blocks):
+        #byte_block = block[starting_index: starting_index + 16]
         #print("Byte Block ", i, byte_block)
-        decryption = aes.invCipher(int.from_bytes(byte_block, byteorder='big'), int.from_bytes(key, byteorder='big'), nk, nr)
-        decrypted_bytes = "%.32x" % aes.toBytes(decryption)
+        #decryption = aes.invCipher(int.from_bytes(byte_block, byteorder='big'), int.from_bytes(key, byteorder='big'), nk, nr)
+        #decrypted_bytes = "%.32x" % aes.toBytes(decryption)
 
-        if i == 0:
-            dcrpt_file = open('decryptedtext.txt', 'wb')
-        else:
-            dcrpt_file = open('decryptedtext.txt', 'ab')
-        dcrpt_file.write(binascii.unhexlify(decrypted_bytes))
-        dcrpt_file.close()
-        starting_index = starting_index + 16
+        #if i == 0:
+         #   dcrpt_file = open('decryptedtext.txt', 'wb')
+        #else:
+         #   dcrpt_file = open('decryptedtext.txt', 'ab')
+        #dcrpt_file.write(binascii.unhexlify(decrypted_bytes))
+        #dcrpt_file.close()
+        #starting_index = starting_index + 16
 
-    print("Saving as decryptedtext.txt")
+    #print("Saving as decryptedtext.txt")
     print("DONE!")
