@@ -257,6 +257,7 @@ class AES:
 
         word = self.keyExpansion(cipherKey, nr, nk)
         state = self.toMatrix(plaintext)
+        print("round[0].k_sch\t\t\t %.32x" % self.toBytes(self.getKey(word, 0)))
         state = self.addRoundKey(state, word, 0)  # round zero
 
         for round in range(1, nr):
@@ -267,6 +268,8 @@ class AES:
 
             state = self.addRoundKey(state, word, round)
 
+            print("round[%d].k_sch\t\t\t %.32x" % (round, (self.toBytes(self.getKey(word, round)))))
+
 
         round = nr
         state = self.subBytes(state)
@@ -274,6 +277,7 @@ class AES:
         state = self.shiftRows(state)
 
         state = self.addRoundKey(state, word, round)
+        print("round[%d].k_sch\t\t\t %.32x\n" % (round, (self.toBytes(self.getKey(word, round)))))
 
         return state
 
@@ -404,15 +408,15 @@ if __name__ == "__main__":
 
     byte_array = list(enc_contents)
 
-    print(byte_array)
+    #print(byte_array)
 
-    print("rem: ", byte_array.__len__() % 16)
+    #print("rem: ", byte_array.__len__() % 16)
 
     block = bytes(byte_array)
 
     for i in range(num_of_blocks):
         byte_block = block[starting_index: starting_index + 16]
-        print("Byte Block ", i, byte_block)
+        #print("Byte Block ", i, byte_block)
         decryption = aes.invCipher(int.from_bytes(byte_block, byteorder='big'), int.from_bytes(key, byteorder='big'), nk, nr)
         decrypted_bytes = "%.32x" % aes.toBytes(decryption)
 
