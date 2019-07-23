@@ -253,17 +253,7 @@ class AES:
 
     def cipher(self, plaintext, cipherKey, nk, nr):
 
-        print("=========================================================")
-        if (nk == 4 and nr == 10):
-            print("AES-128 Nk = 4 Nr = 10")
-        elif (nk == 6 and nr == 12):
-            print("AES-192 Nk = 6 Nr = 12")
-        elif (nk == 8 and nr == 14):
-            print("AES-256 Nk = 8 Nr =14")
-        print("PLAINTEXT: %.32x" % plaintext)
-        print("KEY: %.32x" % cipherKey)
-        print("ENCRYPTION")
-        print("=========================================================")
+        #print("=========================================================")
 
         word = self.keyExpansion(cipherKey, nr, nk)
         state = self.toMatrix(plaintext)
@@ -365,13 +355,13 @@ if __name__ == "__main__":
     file = open(plaintext, "rb")
     contents = (file.read())
     file.close()
-    print("LENGTH: ", contents.__len__())
+    #print("LENGTH: ", contents.__len__())
     #print(contents.hex())
     num_of_blocks = int((contents.__len__()) / 16)
-    print("Number of blocks: ", num_of_blocks) # this will provide how many blocks total to put through encryption
+    #print("Number of blocks: ", num_of_blocks) # this will provide how many blocks total to put through encryption
     remainder = int((contents.__len__()) % 16)  # checks if there is a remainder and if so will provide the padding needed to get to 16 bytes
     byte_array = list(contents)
-    print("Remainder: ", remainder)
+    #print("Remainder: ", remainder)
     if not remainder == 0:
         num_of_blocks = num_of_blocks + 1
         number_of_padded_bytes = 16 - remainder
@@ -390,9 +380,10 @@ if __name__ == "__main__":
 
     starting_index = 0
 
+    print("Encrypting...")
     for i in range(num_of_blocks):
         byte_block = block[starting_index: starting_index + 16]
-        print("Byte Block ", i, byte_block)
+        #print("Byte Block ", i, byte_block)
 
         encryption = aes.cipher(int.from_bytes(byte_block, byteorder='big'), int.from_bytes(key, byteorder='big'), nk, nr)
         encryption_bytes = "%.32x" % aes.toBytes(encryption)
@@ -421,7 +412,7 @@ if __name__ == "__main__":
 
     for i in range(num_of_blocks):
         byte_block = block[starting_index: starting_index + 16]
-        print("Byte Block ", i, byte_block)
+        #print("Byte Block ", i, byte_block)
         decryption = aes.invCipher(int.from_bytes(byte_block, byteorder='big'), int.from_bytes(key, byteorder='big'), nk, nr)
         decrypted_bytes = "%.32x" % aes.toBytes(decryption)
 
